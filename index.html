@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>音読判定機 - MVP</title>
+  <title>音読判定機 - 縦書き対応MVP</title>
   <link rel="stylesheet" href="./style.css" />
-  <!-- pdf.js (UMD) -->
+  <!-- pdf.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
   <!-- confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
-  <!-- アプリ本体 -->
+  <!-- app -->
   <script type="module" src="./app.js" defer></script>
 </head>
 <body>
@@ -19,11 +19,14 @@
   </header>
 
   <main class="container">
-    <!-- ステップ1：PDF読み込み -->
     <section class="card">
       <h2>1. 冒険の準備（音読用PDFを読み込む）</h2>
-      <p class="sub">横書き・1ページ・ルビあり想定。画像だけのPDFは不可（文字抽出できません）。</p>
+      <p class="sub">横書き/縦書きどちらでもOK（1ページ、ルビあり想定）。画像だけのPDFは不可。</p>
       <input type="file" id="pdfInput" accept="application/pdf" />
+      <div class="row">
+        <label><input type="checkbox" id="verticalMode" /> 縦書きPDF（自動判定を上書き）</label>
+        <small id="autoDir" class="muted">自動判定：—</small>
+      </div>
       <div id="pdfPreview" class="preview"></div>
       <div class="row">
         <label><input type="checkbox" id="keepPunct" /> 句読点を採点に含める（上級向け）</label>
@@ -31,7 +34,6 @@
       </div>
     </section>
 
-    <!-- ステップ2：レベル設定＆音読 -->
     <section class="card">
       <h2>2. 音読ステージ（レベルを選んで音読）</h2>
       <div class="row">
@@ -59,7 +61,6 @@
       </div>
     </section>
 
-    <!-- ステップ3：結果 -->
     <section class="card">
       <h2>3. 結果</h2>
       <div class="result">
@@ -83,7 +84,6 @@
       </div>
     </section>
 
-    <!-- 履歴（ローカル保存） -->
     <section class="card">
       <h2>履歴（この端末だけに保存）</h2>
       <table class="history">
@@ -99,7 +99,6 @@
     <small>© 2025 Ondoku Adventure | マイク権限は録音のみに使い、データはサーバーに送信しません。</small>
   </footer>
 
-  <!-- 成功時の効果音 -->
   <audio id="fanfare" src="./assets/sfx/fanfare.mp3" preload="auto"></audio>
 </body>
 </html>
