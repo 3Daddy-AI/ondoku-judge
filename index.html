@@ -5,12 +5,101 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>音読判定機 - MVP</title>
   <link rel="stylesheet" href="./style.css" />
+  <!-- pdf.js (UMD) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <!-- confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
+  <!-- アプリ本体 -->
   <script type="module" src="./app.js" defer></script>
 </head>
 <body>
-  <h1>音読判定機 MVP</h1>
-  <p>GitHub Pages用の雛形です。</p>
+  <header class="nav">
+    <div class="brand">🗺️ 音読の冒険</div>
+    <div class="hint">マイク許可をオンにしてね</div>
+  </header>
+
+  <main class="container">
+    <!-- ステップ1：PDF読み込み -->
+    <section class="card">
+      <h2>1. 冒険の準備（音読用PDFを読み込む）</h2>
+      <p class="sub">横書き・1ページ・ルビあり想定。画像だけのPDFは不可（文字抽出できません）。</p>
+      <input type="file" id="pdfInput" accept="application/pdf" />
+      <div id="pdfPreview" class="preview"></div>
+      <div class="row">
+        <label><input type="checkbox" id="keepPunct" /> 句読点を採点に含める（上級向け）</label>
+        <label><input type="checkbox" id="keepSpaces" /> スペースを残す（単語単位で採点）</label>
+      </div>
+    </section>
+
+    <!-- ステップ2：レベル設定＆音読 -->
+    <section class="card">
+      <h2>2. 音読ステージ（レベルを選んで音読）</h2>
+      <div class="row">
+        <label for="level">採点レベル：</label>
+        <input type="range" id="level" min="0" max="2" step="1" value="1" />
+        <span id="levelLabel">ふつう</span>
+      </div>
+      <div class="stage">
+        <div class="script">
+          <h3>本文</h3>
+          <pre id="refText">(PDFを読み込むとここに本文が出ます)</pre>
+        </div>
+        <div class="control">
+          <button id="startBtn" class="btn primary">🎤 冒険開始（録音）</button>
+          <button id="stopBtn" class="btn" disabled>■ 停止</button>
+          <div class="meter">
+            <div>録音時間：<span id="timer">00:00</span></div>
+            <div>認識中テキスト：</div>
+            <pre id="liveText" class="live"></pre>
+          </div>
+          <div class="warn" id="browserWarn" hidden>
+            iOS Safari/Chromeでは音声認識が動かない/不安定な場合があります。PCのChromeやEdgeでお試しください。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ステップ3：結果 -->
+    <section class="card">
+      <h2>3. 結果</h2>
+      <div class="result">
+        <div class="score">
+          <div class="scoreNumber" id="score">--</div>
+          <div class="scoreLabel">100点満点</div>
+        </div>
+        <div class="feedback">
+          <h3>良かったところ</h3>
+          <ul id="goodList">
+            <li>速度：--</li>
+            <li>正確さ：--</li>
+          </ul>
+          <h3>ワンポイントアドバイス</h3>
+          <p id="advice">--</p>
+          <div class="row">
+            <button id="retryBtn" class="btn">↻ もう一度</button>
+            <button id="saveBtn" class="btn">💾 この結果を保存</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 履歴（ローカル保存） -->
+    <section class="card">
+      <h2>履歴（この端末だけに保存）</h2>
+      <table class="history">
+        <thead>
+          <tr><th>日時</th><th>スコア</th><th>速度</th><th>正確さ</th></tr>
+        </thead>
+        <tbody id="histBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <small>© 2025 Ondoku Adventure | マイク権限は録音のみに使い、データはサーバーに送信しません。</small>
+  </footer>
+
+  <!-- 成功時の効果音 -->
+  <audio id="fanfare" src="./assets/sfx/fanfare.mp3" preload="auto"></audio>
 </body>
 </html>
